@@ -1,0 +1,7 @@
+{
+  "name": "students-city",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
