@@ -35,4 +35,4 @@ jobs:
           chromedriver --version
 
       - name: Test
-        run: npm run test
+        run: npm run test -- --browsers=ChromeHeadless --watch=false
