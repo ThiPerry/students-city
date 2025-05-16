@@ -2,7 +2,7 @@ name: CI / CD Pipeline
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main, Dev ]
   pull_request:
     branches: [ main ]
 
@@ -15,10 +15,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install backend deps
         run: npm install
 
+      - name: Installer Google Chrome v134
+        run: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+          google-chrome --version
+      
+      - name: Installer ChromeDriver v134
+        run: |
+          wget -O chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/134.0.6998.165/linux64/chromedriver-linux64.zip
+          unzip chromedriver.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+          chromedriver --version
+
       - name: Test
-        run: npm run test
+        run: npm run test -- --browsers=ChromeHeadless --watch=false

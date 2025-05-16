@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Connexion</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-page">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email"></ion-input>
+    </ion-item>
+    <ion-note *ngIf="l.email.touched && l.email.hasError('required')" color="danger">
+      L’email est requis.
+    </ion-note>
+    <ion-note *ngIf="l.email.touched && l.email.hasError('email')" color="danger">
+      Format invalide.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Mot de passe</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-note *ngIf="l.password.touched && l.password.invalid" color="danger">
+      Le mot de passe est requis.
+    </ion-note>
+
+    <ion-button expand="block" type="submit" [disabled]="loginForm.invalid">Se connecter</ion-button>
+    <div class="ion-text-center ion-margin-top">
+      Pas encore de compte ?
+    <a routerLink="/auth/register">Inscrivez-vous</a>
+  </div>
+  </form>
+</ion-content>

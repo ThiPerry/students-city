@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Inscription</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="register-page">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">Pseudo</ion-label>
+      <ion-input formControlName="pseudo"></ion-input>
+    </ion-item>
+    <ion-note *ngIf="f.pseudo.touched && f.pseudo.invalid" color="danger">
+      Le pseudo est requis.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email"></ion-input>
+    </ion-item>
+    <ion-note *ngIf="f.email.touched && f.email.hasError('required')" color="danger">
+      L’email est requis.
+    </ion-note>
+    <ion-note *ngIf="f.email.touched && f.email.hasError('email')" color="danger">
+      Format invalide.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Mot de passe</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-note *ngIf="f.password.touched && f.password.hasError('required')" color="danger">
+      Le mot de passe est requis.
+    </ion-note>
+    <ion-note *ngIf="f.password.touched && f.password.hasError('minlength')" color="danger">
+      Minimum 6 caractères.
+    </ion-note>
+
+    <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">S’inscrire</ion-button>
+    <div class="link">
+      <ion-router-link routerLink="/auth/login"> Déjà un compte ? </ion-router-link>
+      <a routerLink="/auth/login"> Connectez-vous </a>
+    </div>
+  </form>
+</ion-content>
