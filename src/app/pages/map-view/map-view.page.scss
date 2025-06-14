@@ -1,0 +1,18 @@
+// Assurez-vous que l'ion-content parent remplit l'espace disponible
+ion-content {
+  // Utilise display: flex pour que l'enfant (capacitor-google-map) puisse prendre toute la hauteur
+  display: flex; 
+  // S'assure que ion-content prend la hauteur totale disponible dans sa zone
+  height: 100%; 
+  // Une couleur de fond pour le débogage, vous pouvez l'enlever plus tard
+  --background: #f8f8f8; 
+}
+
+// Styles pour le composant de la carte
+capacitor-google-map {
+  // Utilisez 'display: block' pour que 'width' et 'height' fonctionnent comme prévu
+  // et pour qu'il prenne toute la largeur disponible sur une nouvelle ligne.
+  display: block; 
+  width: 100%; // La carte prend 100% de la largeur de son parent
+  height: 100%; // La carte prend 100% de la hauteur de son parent (ion-content)
+}
