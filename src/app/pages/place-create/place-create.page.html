@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/places"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Créer un lieu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <!-- Nom -->
+    <ion-item>
+      <ion-label position="floating">Nom *</ion-label>
+      <ion-input formControlName="name"></ion-input>
+    </ion-item>
+    <ion-text
+      *ngIf="form.controls['name'].touched && form.controls['name'].invalid"
+      color="danger"
+    >
+      Le nom est requis.
+    </ion-text>
+
+    <!-- Type -->
+    <ion-item>
+      <ion-label position="floating">Type *</ion-label>
+      <ion-select formControlName="type" interface="popover">
+        <ion-select-option *ngFor="let t of types" [value]="t">
+          {{ t }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-text
+      *ngIf="form.controls['type'].touched && form.controls['type'].invalid"
+      color="danger"
+    >
+      Le type est requis.
+    </ion-text>
+
+    <!-- Adresse -->
+    <ion-item>
+      <ion-label position="floating">Adresse *</ion-label>
+      <ion-input formControlName="adresse"></ion-input>
+    </ion-item>
+    <ion-text
+      *ngIf="form.controls['adresse'].touched && form.controls['adresse'].invalid"
+      color="danger"
+    >
+      L’adresse est requise.
+    </ion-text>
+
+    <!-- Description -->
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea formControlName="description"></ion-textarea>
+    </ion-item>
+
+    <!-- Latitude -->
+    <ion-item>
+      <ion-label position="floating">Latitude *</ion-label>
+      <ion-input formControlName="latitude" readonly></ion-input>
+    </ion-item>
+    <ion-text
+      *ngIf="form.controls['latitude'].touched && form.controls['latitude'].invalid"
+      color="danger"
+    >
+      La latitude est requise.
+    </ion-text>
+
+    <!-- Longitude -->
+    <ion-item>
+      <ion-label position="floating">Longitude *</ion-label>
+      <ion-input formControlName="longitude" readonly></ion-input>
+    </ion-item>
+    <ion-text
+      *ngIf="form.controls['longitude'].touched && form.controls['longitude'].invalid"
+      color="danger"
+    >
+      La longitude est requise.
+    </ion-text>
+
+    <!-- Bouton Créer -->
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">
+      Créer
+    </ion-button>
+
+  </form>
+</ion-content>

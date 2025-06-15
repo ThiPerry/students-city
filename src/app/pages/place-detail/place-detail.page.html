@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/places"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ place?.name }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ng-container *ngIf="!loading && place; else loadingTpl">
+
+    <!-- Détails du lieu -->
+    <h2>{{ place.name }}</h2>
+    <p>{{ place.description }}</p>
+    <p><strong>Type :</strong> {{ place.type }}</p>
+    <p><strong>Adresse :</strong> {{ place.adresse }}</p>
+    <p>
+      <strong>Coordonnées :</strong><br />
+      {{ place.latitude }}, {{ place.longitude }}
+    </p>
+
+    <!-- Formulaire d’ajout d’avis -->
+    <ion-card class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>Écrire un avis</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+          <!-- Commentaire -->
+          <ion-item>
+            <ion-label position="stacked">Commentaire</ion-label>
+            <ion-textarea formControlName="commentaire"></ion-textarea>
+          </ion-item>
+
+          <!-- Rating -->
+          <ion-item>
+            <ion-label position="stacked">Note (1–5)</ion-label>
+            <ion-input
+              type="number"
+              formControlName="rating"
+              [attr.min]="1"
+              [attr.max]="5"
+            ></ion-input>
+          </ion-item>
+          <ion-text
+            color="danger"
+            *ngIf="reviewForm.controls['rating'].touched && reviewForm.controls['rating'].invalid"
+          >
+            <p *ngIf="reviewForm.controls['rating'].errors?.['required']">
+              La note est requise.
+            </p>
+            <p *ngIf="
+              reviewForm.controls['rating'].errors?.['min'] ||
+              reviewForm.controls['rating'].errors?.['max']
+            ">
+              La note doit être comprise entre 1 et 5.
+            </p>
+          </ion-text>
+
+          <ion-button
+            expand="full"
+            type="submit"
+            [disabled]="reviewForm.invalid"
+            class="ion-margin-top"
+          >
+            Soumettre l’avis
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Liste des avis -->
+    <ion-card class="ion-margin-top">
+      <ion-card-header>
+        <ion-card-title>Avis</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list *ngIf="reviews.length; else noReviewsTpl">
+          <ion-item *ngFor="let r of reviews">
+            <ion-label>
+              <h4>Note : {{ r.rating }}/5</h4>
+              <p *ngIf="r.commentaire">{{ r.commentaire }}</p>
+              <small>Le {{ r.createAt | date:'medium' }}</small>
+            </ion-label>
+
+            <!-- Boutons Modifier/Supprimer pour l’auteur -->
+
+            <ion-buttons slot="end" *ngIf="r.user?.id === currentUserId">
+              <ion-button fill="clear" (click)="editReview(r)">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" color="danger" (click)="deleteReview(r)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-list>
+
+        <ng-template #noReviewsTpl>
+          <p class="ion-text-center">Aucun avis pour l’instant.</p>
+        </ng-template>
+      </ion-card-content>
+    </ion-card>
+
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    <div class="ion-text-center ion-padding">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </ng-template>
+</ion-content>
