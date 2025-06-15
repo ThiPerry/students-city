@@ -12,9 +12,14 @@ export interface Place {
   id: number;
   name: string;
   description: string;
+  adresse:string;
+  type:string;
   latitude: number;
   longitude: number;
+  rating?: number;       // ← moyenne actuelle
+  votesCount?: number; 
 }
+
 
 /** DTO pour créer un lieu (sans l’ID) */
 export type PlaceCreateDto = Omit<Place, 'id'>;
@@ -23,7 +28,7 @@ export type PlaceCreateDto = Omit<Place, 'id'>;
 export type PlaceUpdateDto = Partial<PlaceCreateDto>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlacesService {
   private baseUrl = `${environment.apiUrl}/places`;
@@ -48,10 +53,5 @@ export class PlacesService {
   /** Met à jour un établissement existant */
   updatePlace(id: number, data: PlaceUpdateDto): Observable<Place> {
     return this.http.put<Place>(`${this.baseUrl}/${id}`, data);
-  }
-
-  /** Supprime un établissement */
-  deletePlace(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }
