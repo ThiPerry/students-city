@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mon Profil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+    <!-- Pseudo -->
+    <ion-item>
+      <ion-label position="floating">Pseudo</ion-label>
+      <ion-input formControlName="pseudo"></ion-input>
+    </ion-item>
+
+    <!-- Email -->
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+    <ion-text
+      color="danger"
+      *ngIf="profileForm.controls['email'].touched && profileForm.controls['email'].invalid"
+    >
+      <p *ngIf="profileForm.controls['email'].errors?.['email']">
+        L’email n’est pas valide.
+      </p>
+    </ion-text>
+
+    <!-- Bouton de soumission -->
+    <ion-button
+      expand="full"
+      type="submit"
+      [disabled]="profileForm.controls['email'].invalid"
+    >
+      Mettre à jour
+    </ion-button>
+
+  </form>
+</ion-content>
