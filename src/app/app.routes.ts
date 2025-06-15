@@ -7,6 +7,7 @@ import { ProfilePage }    from './pages/profile/profile.component';
 import { AuthGuard }      from './guard/auth-guard.guard';
 import { PlacesListPage } from './pages/places-list/places-list.page';
 import { PlaceDetailPage } from './pages/place-detail/place-detail.page';
+import {PlaceCreatePage} from './pages/place-create/place-create.page';
 
 
 export const routes: Routes = [
@@ -17,16 +18,8 @@ export const routes: Routes = [
   { path: 'home',          component: HomePage,    canActivate: [AuthGuard] },
   { path: 'places',        component: PlacesListPage,    canActivate: [AuthGuard] },
   { path: 'places/:id',   component: PlaceDetailPage,   canActivate: [AuthGuard] },
+  { path: 'places/new/:lat/:lng', component: PlaceCreatePage, canActivate: [AuthGuard] },
   { path: '',              redirectTo: 'auth/login', pathMatch: 'full' },
   { path: '**',            redirectTo: 'map' },
-  // {
-  //   path: 'places-list',
-  //   loadComponent: () => import('./pages/places-list/places-list.page').then( m => m.PlacesListPage)
-  // },
-  // {
-  //   path: 'place-detail',
-  //   loadComponent: () => import('./pages/place-detail/place-detail.page').then( m => m.PlaceDetailPage)
-  // }
-
 
 ];
