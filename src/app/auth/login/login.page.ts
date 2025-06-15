@@ -64,7 +64,7 @@ export class LoginPage {
     this.auth.login(email, password).subscribe({
       next: async () => {
         await loading.dismiss();
-        this.nav.navigateRoot('/home');
+        this.nav.navigateRoot('/map');
       },
       error: async err => {
         await loading.dismiss();

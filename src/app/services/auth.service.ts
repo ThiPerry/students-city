@@ -1,3 +1,4 @@
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Preferences } from '@capacitor/preferences';
@@ -8,11 +9,18 @@ import { AlertController } from '@ionic/angular';
 
 import { environment } from 'src/environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface Session {
+  id: number;
+  email: string;
+  roles: string[];
+  token: string;
+  // … tout autre champ user
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<any>(null);
+  private currentUserSubject = new BehaviorSubject<Session|null>(null);
+  private jwtToken: string|null = null;          // ← token en mémoire
 
   constructor(
     private http: HttpClient,
@@ -25,7 +33,9 @@ export class AuthService {
   private async loadUserFromStorage() {
     const { value } = await Preferences.get({ key: 'user' });
     if (value) {
-      this.currentUserSubject.next(JSON.parse(value));
+      const session: Session = JSON.parse(value);
+      this.jwtToken = session.token;              // ← on restaure le token
+      this.currentUserSubject.next(session);
     }
   }
 
@@ -43,66 +53,65 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<any>(
-      `${environment.apiUrl}/login`,
-      { email, password }
-    ).pipe(
-      // 1) Gestion du cas « compte en attente de validation »
-      mergeMap(data => {
-        const roles: string[] = data.user.roles || [];
-        if (roles.length === 0) {
-          // alerte + redirection
-          this.alertCtrl
-            .create({
-              header: 'Compte non validé',
-              message: 'Votre compte est toujours en attente de validation.',
-              buttons: ['OK']
-            })
-            .then(alert =>
-              alert.present().then(() => this.router.navigateByUrl('/auth/login'))
-            );
-          return throwError(() => new Error('Compte en attente de validation'));
-        }
+    return this.http
+      .post<{ token: string; user: any }>(
+        `${environment.apiUrl}/login`,
+        { email, password }
+      )
+      .pipe(
 
-        // 2) Sinon, on stocke l’utilisateur et on émet
-        return from(
-          Preferences.set({ key: 'user', value: JSON.stringify(data.user) })
-        ).pipe(
-          mapTo(data.user),
-          mergeMap(user => {
-            this.currentUserSubject.next(user);
-            return [user];
-          })
-        );
-      }),
+        mergeMap(data => {
+          this.jwtToken = data.token;
 
-      catchError(err => {
-        if (err.status === 401) {
-          this.alertCtrl
-            .create({
+
+          const session: Session = {
+            ...data.user,
+            token: data.token
+          };
+
+          return from(
+            Preferences.set({ key: 'user', value: JSON.stringify(session) })
+          ).pipe(
+            mapTo(session)
+          );
+        }),
+
+        mergeMap(session => {
+          this.currentUserSubject.next(session);
+          return [session];
+        }),
+
+        catchError(err => {
+          if (err.status === 401) {
+            this.alertCtrl.create({
               header: 'Erreur de connexion',
               message: 'Email ou mot de passe incorrect.',
               buttons: ['OK']
-            })
-            .then(alert => alert.present());
-        }
-          return throwError(() => new Error('Email ou mot de passe incorect'));
-      })
-    );
+            }).then(a => a.present());
+          }
+          return throwError(() => new Error('Email ou mot de passe incorrect'));
+        })
+      );
   }
 
   async logout() {
+    this.jwtToken = null;                         
     await Preferences.remove({ key: 'user' });
     this.currentUserSubject.next(null);
     this.router.navigateByUrl('/auth/login');
   }
 
-  async getToken() {
-    const { value } = await Preferences.get({ key: 'user' });
-    if (value) {
-      const user = JSON.parse(value);
-      return user.token;
+
+  async getToken(): Promise<string|null> {
+    if (this.jwtToken) {
+      return this.jwtToken;
     }
-    return null;
+    const { value } = await Preferences.get({ key: 'user' });
+    if (!value) {
+      return null;
+    }
+    const session: Session = JSON.parse(value);
+    this.jwtToken = session.token;                
+    return session.token;
   }
 }
