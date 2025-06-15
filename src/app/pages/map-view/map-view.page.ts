@@ -3,6 +3,7 @@ import { GoogleMap } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment'; 
 import { PlacesService } from 'src/app/services/places.service';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from "@ionic/angular/standalone"; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map-view',
@@ -14,8 +15,12 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from "@ionic/angular/stan
 export class MapViewPage implements AfterViewInit {
   @ViewChild('map') mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
+  idmaptoidplace: { [idmap: string ] : number; } = {};
 
-  constructor(private placesService: PlacesService) {}
+  constructor(
+    private placesService: PlacesService,
+    private router: Router
+  ) {}
 
   ngAfterViewInit() {
     this.createMap();
@@ -49,10 +54,14 @@ export class MapViewPage implements AfterViewInit {
         snippet: place.description,
       }));
 
-      await this.newMap.addMarkers(markers);
-
+      const temps = await this.newMap.addMarkers(markers);
+      // temps.forEach(idMarker => {
+      //   this.idmaptoidplace[idMarker] = 
+        
+      // });
       this.newMap.setOnMarkerClickListener(async (marker) => {
           console.log('Marqueur cliqué :', marker);
+          this.router.navigate(["/places", (+marker.markerId)+1])
       });
     });
   }

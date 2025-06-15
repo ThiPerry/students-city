@@ -14,7 +14,6 @@ export interface Place {
   description: string;
   latitude: number;
   longitude: number;
-  // … ajoutez d’autres champs si nécessaire
 }
 
 /** DTO pour créer un lieu (sans l’ID) */
