@@ -39,13 +39,13 @@ export class MapViewPage implements AfterViewInit {
   }
 
   addMarkers() {
-    this.placesService.getValidatedPlaces().subscribe(async (places) => {
+    this.placesService.getPlaces().subscribe(async (places) => {
       const markers = places.map(place => ({
         coordinate: {
           lat: place.latitude,
           lng: place.longitude
         },
-        title: place.nom,
+        title: place.name,
         snippet: place.description,
       }));
 

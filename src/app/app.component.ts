@@ -25,7 +25,9 @@ interface AppPage {
 export class AppComponent {
   public appPages: AppPage[] = [
     { title: 'Carte',  url: '/map',    icon: 'map'    },
-    { title: 'Profil', url: '/profile',icon: 'person' }
+    { title: 'Profil', url: '/profile',icon: 'person' },
+    { title: 'Lieux',   url: '/places', icon: 'list'   }
+
   ];
 
   constructor(private auth: AuthService) {}
