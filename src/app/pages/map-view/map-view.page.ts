@@ -44,18 +44,14 @@ export class MapViewPage implements AfterViewInit {
   }
 
 async createMap() {
-  // 1) Demande de permission (Android / iOS)
   try {
     const permission = await Geolocation.requestPermissions();
     if (permission.location !== 'granted') {
       throw new Error('Permission de localisation refusée');
     }
   } catch (err) {
-    console.error('Erreur permission géoloc :', err);
-    // On peut décider de continuer avec un fallback
   }
 
-  // 2) Récupère la position de l’utilisateur
   let latitude  = 48.8566;
   let longitude = 2.3522;
   try {
@@ -64,10 +60,8 @@ async createMap() {
     longitude = pos.coords.longitude;
   } catch (err) {
     console.error('Impossible de récupérer la position :', err);
-    // On reste sur Paris par défaut
   }
 
-  // 3) Création de la carte centrée sur l’utilisateur (ou fallback)
   this.newMap = await GoogleMap.create({
     id:      'students-city-map',
     element: this.mapRef.nativeElement,
@@ -77,8 +71,6 @@ async createMap() {
       zoom:   14
     }
   });
-
-  // 4) Ajout des marqueurs
   this.addMarkers();
 }
 
