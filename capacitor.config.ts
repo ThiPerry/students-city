@@ -1,13 +1,15 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.students.city',
-  appName: 'students-city',
+  appId: 'com.example.app',
+  appName: 'StudentsCity',
   webDir: 'www',
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
-      backgroundColor: '#ffffff'
+      launchAutoHide: true,
+      backgroundColor: '#FFF7EE',
+      showSpinner: false
     }
   }
 };

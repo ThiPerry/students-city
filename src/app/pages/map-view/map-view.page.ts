@@ -15,6 +15,7 @@ import {
   IonContent,
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
 import { AlertController, NavController } from '@ionic/angular';
 import { ActionSheetController } from '@ionic/angular';
 
@@ -42,22 +43,45 @@ export class MapViewPage implements AfterViewInit {
     this.createMap();
   }
 
-  async createMap() {
-    this.newMap = await GoogleMap.create({
-      id: 'students-city-map',
-      element: this.mapRef.nativeElement,
-      apiKey: environment.googleMapsApiKey,
-      config: {
-        center: {
-          lat: 48.8566,
-          lng: 2.3522,
-        },
-        zoom: 12,
-      },
-    });
-
-    this.addMarkers();
+async createMap() {
+  // 1) Demande de permission (Android / iOS)
+  try {
+    const permission = await Geolocation.requestPermissions();
+    if (permission.location !== 'granted') {
+      throw new Error('Permission de localisation refusée');
+    }
+  } catch (err) {
+    console.error('Erreur permission géoloc :', err);
+    // On peut décider de continuer avec un fallback
   }
+
+  // 2) Récupère la position de l’utilisateur
+  let latitude  = 48.8566;
+  let longitude = 2.3522;
+  try {
+    const pos = await Geolocation.getCurrentPosition();
+    latitude  = pos.coords.latitude;
+    longitude = pos.coords.longitude;
+  } catch (err) {
+    console.error('Impossible de récupérer la position :', err);
+    // On reste sur Paris par défaut
+  }
+
+  // 3) Création de la carte centrée sur l’utilisateur (ou fallback)
+  this.newMap = await GoogleMap.create({
+    id:      'students-city-map',
+    element: this.mapRef.nativeElement,
+    apiKey:  environment.googleMapsApiKey,
+    config: {
+      center: { lat: latitude, lng: longitude },
+      zoom:   14
+    }
+  });
+
+  // 4) Ajout des marqueurs
+  this.addMarkers();
+}
+
 
   addMarkers() {
     this.placesService.getPlaces().subscribe(async (places) => {
