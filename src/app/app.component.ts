@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { OfflineBannerComponent } from './components/offline-banner.component'
 
 interface AppPage {
   title: string;
@@ -15,7 +16,9 @@ interface AppPage {
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
+    OfflineBannerComponent,
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
