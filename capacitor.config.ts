@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.example.app',
-  appName: 'StudentsCity',
+  appId: 'com.students.city',
+  appName: 'students-city',
   webDir: 'www',
   plugins: {
     SplashScreen: {
